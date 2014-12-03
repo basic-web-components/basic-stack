@@ -39,23 +39,33 @@ and width of the child elements.
 <script>
 Polymer({
 
+  attached: function() {
+    this.super();
+    window.addEventListener( "resize", this._resizeHandler );
+  },
+
   contentChanged: function() {
+    this.log( "contentChanged" );
     this.recalc();
+  },
+
+  detached: function() {
+    this.super();
+    window.removeEventListener( "resize", this._resizeHandler );
   },
 
   ready: function() {
     this.super();
-    window.addEventListener( "resize", function() {
-      this.style.width = null;
-      this.recalc();
-    }.bind( this ));
+    this._resizeHandler = this._resize.bind( this );
   },
 
   recalc: function() {
     var contentNodes = this.flattenChildren;
     var maxWidth = 0;
     var maxHeight = 0;
+    // debugger;
     Array.prototype.forEach.call( contentNodes, function( node ) {
+      console.log( "offsetWidth: " + node.offsetWidth );
       if ( node.offsetWidth ) {
         maxWidth = Math.max( maxWidth, node.offsetWidth );
       }
@@ -64,13 +74,21 @@ Polymer({
       }
     });
     maxWidth = Math.ceil( maxWidth ); // Round up to avoid layout problems.
+    this.log( "recalc: " + maxWidth );
     this.style.width = maxWidth
       ? maxWidth + "px"
       : null;
     this.style.height = maxHeight
       ? maxHeight + "px"
-      : null;    
-  }
+      : null;
+  },
+
+  _resize: function( event ) {
+    this.style.width = null;
+    this.recalc();    
+  },
+
+  _resizeHandler: null
 
 });
 </script>
