@@ -44,6 +44,7 @@ Polymer({
   },
 
   ready: function() {
+    this.super();
     window.addEventListener( "resize", function() {
       this.style.width = null;
       this.recalc();
@@ -51,7 +52,7 @@ Polymer({
   },
 
   recalc: function() {
-    var contentNodes = this.$.content.getDistributedNodes();
+    var contentNodes = this.flattenChildren;
     var maxWidth = 0;
     var maxHeight = 0;
     Array.prototype.forEach.call( contentNodes, function( node ) {
@@ -62,8 +63,7 @@ Polymer({
         maxHeight = Math.max( maxHeight, node.offsetHeight );
       }
     });
-    // console.log( maxWidth + " x " + maxHeight );
-    maxWidth += 1; // HACK
+    maxWidth = Math.ceil( maxWidth ); // Round up to avoid layout problems.
     this.style.width = maxWidth
       ? maxWidth + "px"
       : null;
