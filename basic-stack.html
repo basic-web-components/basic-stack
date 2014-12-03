@@ -1,0 +1,77 @@
+<!--
+Stacks its child elements on top of each other, taking on the maximum height
+and width of the child elements.
+-->
+
+<link rel="import" href="../basic-element/basic-element.html">
+
+<polymer-element name="basic-stack" extends="basic-element">
+<template>
+  <style>
+  :host {
+    background: rgba( 0, 128, 128, 0.2 );
+    /*border: 1px solid rgba( 255, 0, 0, .5 );*/
+    /*box-sizing: border-box;*/
+    display: block;
+    position: relative;
+  }
+
+  #measureContainer {
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  polyfill-next-selector {
+    content: '#measureContainer > *';
+  }
+  ::content > * {
+    left: 0;
+    position: absolute;
+    top: 0;
+  }
+  </style>
+  <div id="measureContainer">
+    <content id="content"></content>
+  </div>
+</template>
+<script>
+Polymer({
+
+  contentChanged: function() {
+    this.recalc();
+  },
+
+  ready: function() {
+    window.addEventListener( "resize", function() {
+      this.style.width = null;
+      this.recalc();
+    }.bind( this ));
+  },
+
+  recalc: function() {
+    var contentNodes = this.$.content.getDistributedNodes();
+    var maxWidth = 0;
+    var maxHeight = 0;
+    Array.prototype.forEach.call( contentNodes, function( node ) {
+      if ( node.offsetWidth ) {
+        maxWidth = Math.max( maxWidth, node.offsetWidth );
+      }
+      if ( node.offsetHeight ) {
+        maxHeight = Math.max( maxHeight, node.offsetHeight );
+      }
+    });
+    // console.log( maxWidth + " x " + maxHeight );
+    maxWidth += 1; // HACK
+    this.style.width = maxWidth
+      ? maxWidth + "px"
+      : null;
+    this.style.height = maxHeight
+      ? maxHeight + "px"
+      : null;    
+  }
+
+});
+</script>
+</polymer-element>
