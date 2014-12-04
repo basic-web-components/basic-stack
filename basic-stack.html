@@ -27,9 +27,7 @@ and width of the child elements.
     content: '#measureContainer > *';
   }
   ::content > * {
-    left: 0;
     position: absolute;
-    top: 0;
   }
   </style>
   <div id="measureContainer">
@@ -45,7 +43,6 @@ Polymer({
   },
 
   contentChanged: function() {
-    this.log( "contentChanged" );
     this.recalc();
   },
 
@@ -63,9 +60,7 @@ Polymer({
     var contentNodes = this.flattenChildren;
     var maxWidth = 0;
     var maxHeight = 0;
-    // debugger;
     Array.prototype.forEach.call( contentNodes, function( node ) {
-      console.log( "offsetWidth: " + node.offsetWidth );
       if ( node.offsetWidth ) {
         maxWidth = Math.max( maxWidth, node.offsetWidth );
       }
@@ -74,7 +69,6 @@ Polymer({
       }
     });
     maxWidth = Math.ceil( maxWidth ); // Round up to avoid layout problems.
-    this.log( "recalc: " + maxWidth );
     this.style.width = maxWidth
       ? maxWidth + "px"
       : null;
