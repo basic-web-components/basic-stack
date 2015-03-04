@@ -42,8 +42,13 @@ Polymer({
     window.addEventListener( "resize", this._resizeHandler );
   },
 
+  // TODO: Come up with some way to monitor attributes in contentChanged.
+  // BUG: Don't trigger contentChanged if mutation is on the element itself --
+  // should only trigger on changes in the tree of nodes below this element.
   contentChanged: function() {
-    this.recalc();
+    setTimeout( function() {
+      this.recalc();    
+    }.bind( this ));
   },
 
   detached: function() {
@@ -69,12 +74,27 @@ Polymer({
       }
     });
     maxWidth = Math.ceil( maxWidth ); // Round up to avoid layout problems.
-    this.style.width = maxWidth
+    var width = maxWidth
       ? maxWidth + "px"
       : null;
-    this.style.height = maxHeight
+    var height = maxHeight
       ? maxHeight + "px"
       : null;
+    if ( this.style.width !== width ) {
+      this.style.width = width;
+    }
+    if ( this.style.height !== height ) {
+      this.style.height = height;    
+    }
+
+    var event = new CustomEvent( "basic-stack-resize", {
+      detail: {
+        count: contentNodes.length,
+        height: parseInt( height ),
+        width: parseInt( width )
+      }
+    });
+    this.dispatchEvent( event );
   },
 
   _resize: function( event ) {
