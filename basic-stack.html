@@ -57,14 +57,12 @@ Polymer(Platform.mixin({
     var maxWidth = 0;
     var maxHeight = 0;
     Array.prototype.forEach.call(contentNodes, function(node) {
-      if (node.offsetWidth) {
-        maxWidth = Math.max(maxWidth, node.offsetWidth);
-      }
-      if (node.offsetHeight) {
-        maxHeight = Math.max(maxHeight, node.offsetHeight);
-      }
+      // We use getBoundingClientRect so we can get fractional sizes.
+      var rect = node.getBoundingClientRect();
+      maxWidth = Math.max(maxWidth, rect.width);
+      maxHeight = Math.max(maxHeight, rect.height);
     });
-    maxWidth = Math.ceil(maxWidth); // Round up to avoid layout problems.
+    maxWidth = Math.ceil(maxWidth); // Round up when hard-coding width.
     var width = maxWidth ?
       maxWidth + 'px' :
       null;
@@ -72,7 +70,7 @@ Polymer(Platform.mixin({
       maxHeight + 'px' :
       null;
     this.$.stackContainer.style.width = width;
-    this.$.stackContainer.style.height = height;    
+    this.$.stackContainer.style.height = height;
 
     var event = new CustomEvent('basic-layout', {
       detail: {
