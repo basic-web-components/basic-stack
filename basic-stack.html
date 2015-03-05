@@ -41,9 +41,9 @@ Polymer(Platform.mixin({
   },
 
   contentChanged: function() {
-    setTimeout( function() {
-      this.recalc();    
-    }.bind( this ));
+    setTimeout(function() {
+      this.recalc();
+    }.bind(this));
   },
 
   detached: function() {
@@ -52,41 +52,40 @@ Polymer(Platform.mixin({
   },
 
   recalc: function() {
-    this.log( "recalc" );
     var contentNodes = this.flattenChildren;
     var maxWidth = 0;
     var maxHeight = 0;
-    Array.prototype.forEach.call( contentNodes, function( node ) {
-      if ( node.offsetWidth ) {
-        maxWidth = Math.max( maxWidth, node.offsetWidth );
+    Array.prototype.forEach.call(contentNodes, function(node) {
+      if (node.offsetWidth) {
+        maxWidth = Math.max(maxWidth, node.offsetWidth);
       }
-      if ( node.offsetHeight ) {
-        maxHeight = Math.max( maxHeight, node.offsetHeight );
+      if (node.offsetHeight) {
+        maxHeight = Math.max(maxHeight, node.offsetHeight);
       }
     });
-    maxWidth = Math.ceil( maxWidth ); // Round up to avoid layout problems.
-    var width = maxWidth
-      ? maxWidth + "px"
-      : null;
-    var height = maxHeight
-      ? maxHeight + "px"
-      : null;
+    maxWidth = Math.ceil(maxWidth); // Round up to avoid layout problems.
+    var width = maxWidth ?
+      maxWidth + 'px' :
+      null;
+    var height = maxHeight ?
+      maxHeight + 'px' :
+      null;
     this.$.stackContainer.style.width = width;
     this.$.stackContainer.style.height = height;    
 
-    var event = new CustomEvent( "basic-stack-resize", {
+    var event = new CustomEvent('basic-stack-resize', {
       detail: {
         count: contentNodes.length,
-        height: parseInt( height ),
-        width: parseInt( width )
+        height: parseInt(height),
+        width: parseInt(width)
       }
     });
-    this.dispatchEvent( event );
+    this.dispatchEvent(event);
   },
 
-  resized: function( event ) {
+  resized: function(event) {
     var foo = this.$.stackContainer.style;
-    this.$.stackContainer.style.width = "100%";
+    this.$.stackContainer.style.width = '100%';
     this.recalc();
   }
 
