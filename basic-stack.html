@@ -11,26 +11,25 @@ and width of the child elements.
   <style>
   :host {
     background: rgba( 0, 128, 128, 0.2 );
-    /*box-sizing: border-box;*/
+    box-sizing: border-box;
     display: block;
     position: relative;
   }
 
-  #measureContainer {
+  #stackContainer {
     left: 0;
-    position: absolute;
     top: 0;
     width: 100%;
   }
 
   polyfill-next-selector {
-    content: '#measureContainer > *';
+    content: '#stackContainer > *';
   }
   ::content > * {
     position: absolute;
   }
   </style>
-  <div id="measureContainer">
+  <div id="stackContainer">
     <content id="content"></content>
   </div>
 </template>
@@ -73,8 +72,8 @@ Polymer(Platform.mixin({
     var height = maxHeight
       ? maxHeight + "px"
       : null;
-    this.$.measureContainer.style.width = width;
-    this.$.measureContainer.style.height = height;    
+    this.$.stackContainer.style.width = width;
+    this.$.stackContainer.style.height = height;    
 
     var event = new CustomEvent( "basic-stack-resize", {
       detail: {
@@ -87,8 +86,8 @@ Polymer(Platform.mixin({
   },
 
   resized: function( event ) {
-    var foo = this.$.measureContainer.style;
-    this.$.measureContainer.style.width = "100%";
+    var foo = this.$.stackContainer.style;
+    this.$.stackContainer.style.width = "100%";
     this.recalc();
   }
 
