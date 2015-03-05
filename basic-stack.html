@@ -74,7 +74,7 @@ Polymer(Platform.mixin({
     this.$.stackContainer.style.width = width;
     this.$.stackContainer.style.height = height;    
 
-    var event = new CustomEvent('basic-stack-resize', {
+    var event = new CustomEvent('basic-layout', {
       detail: {
         count: contentNodes.length,
         height: parseInt(height),
