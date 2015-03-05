@@ -20,6 +20,7 @@ body {
 }
 
 basic-framed-content {
+  max-width: 800px;
   padding: 2em;
 }
 
@@ -42,7 +43,9 @@ img {
     Below you see a basic-stack element containing an image and some text. The
     basic-stack has a semi-transparent background so you can see the element's
     bounds. As you resize the window, note that the basic-stack updates its
-    size to be the maximium height and width of its two children.
+    size to be the maximium height and width of its two children. Significantly,
+    the source does not require that the heights of those child elements be
+    pre-calculated at design time and fixed in CSS.
   </p>
   <basic-stack>
     <div>
