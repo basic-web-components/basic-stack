@@ -4,13 +4,13 @@ and width of the child elements.
 -->
 
 <link rel="import" href="../basic-element/basic-element.html">
+<script src="../basic-helpers/BasicResizeHelpers.js"></script>
 
 <polymer-element name="basic-stack" extends="basic-element">
 <template>
   <style>
   :host {
     background: rgba( 0, 128, 128, 0.2 );
-    /*border: 1px solid rgba( 255, 0, 0, .5 );*/
     /*box-sizing: border-box;*/
     display: block;
     position: relative;
@@ -35,16 +35,13 @@ and width of the child elements.
   </div>
 </template>
 <script>
-Polymer({
+Polymer(Platform.mixin({
 
   attached: function() {
     this.super();
-    window.addEventListener( "resize", this._resizeHandler );
+    this.listenForResize();
   },
 
-  // TODO: Come up with some way to monitor attributes in contentChanged.
-  // BUG: Don't trigger contentChanged if mutation is on the element itself --
-  // should only trigger on changes in the tree of nodes below this element.
   contentChanged: function() {
     setTimeout( function() {
       this.recalc();    
@@ -53,15 +50,11 @@ Polymer({
 
   detached: function() {
     this.super();
-    window.removeEventListener( "resize", this._resizeHandler );
-  },
-
-  ready: function() {
-    this.super();
-    this._resizeHandler = this._resize.bind( this );
+    this.listenForResize(false);
   },
 
   recalc: function() {
+    this.log( "recalc" );
     var contentNodes = this.flattenChildren;
     var maxWidth = 0;
     var maxHeight = 0;
@@ -80,12 +73,8 @@ Polymer({
     var height = maxHeight
       ? maxHeight + "px"
       : null;
-    if ( this.style.width !== width ) {
-      this.style.width = width;
-    }
-    if ( this.style.height !== height ) {
-      this.style.height = height;    
-    }
+    this.$.measureContainer.style.width = width;
+    this.$.measureContainer.style.height = height;    
 
     var event = new CustomEvent( "basic-stack-resize", {
       detail: {
@@ -97,13 +86,12 @@ Polymer({
     this.dispatchEvent( event );
   },
 
-  _resize: function( event ) {
-    this.style.width = null;
-    this.recalc();    
-  },
+  resized: function( event ) {
+    var foo = this.$.measureContainer.style;
+    this.$.measureContainer.style.width = "100%";
+    this.recalc();
+  }
 
-  _resizeHandler: null
-
-});
+}, BasicResizeHelpers));
 </script>
 </polymer-element>

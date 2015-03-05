@@ -5,7 +5,8 @@
   "license": "MIT",
   "main": "<COMPONENT>.html",
   "dependencies": {
-    "basic-element": "basic-web-components/basic-element#master"
+    "basic-element": "basic-web-components/basic-element#master",
+    "basic-helpers": "basic-web-components/basic-helpers#master"
   },
   "devDependencies": {
     "basic-framed-content": "basic-web-components/basic-framed-content#master"
