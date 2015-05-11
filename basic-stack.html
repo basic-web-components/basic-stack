@@ -1,59 +1,75 @@
 <!--
 Stacks its child elements on top of each other, taking on the maximum height
 and width of the child elements.
+
+@element basic-stack
 -->
 
-<link rel="import" href="../basic-element/basic-element.html">
-<script src="../basic-helpers/BasicResizeHelpers.js"></script>
+<link rel="import" href="../basic-aspect/basic-aspect.html">
+<link rel="import" href="../basic-children-content/basic-children-content.html">
+<script src="../basic-shared/Resized.js"></script>
 
-<polymer-element name="basic-stack" extends="basic-element">
-<template>
+<dom-module id="basic-stack">
   <style>
   :host {
     box-sizing: border-box;
-    display: block;
+    display: inline-block;
     position: relative;
   }
 
   #stackContainer {
+    display: block;
     left: 0;
     position: relative;
     top: 0;
     width: 100%;
   }
 
-  polyfill-next-selector {
-    content: '#stackContainer > *';
-  }
-  ::content > * {
+  #stackContainer ::content > * {
     position: absolute;
   }
   </style>
-  <div id="stackContainer">
-    <content id="content"></content>
-  </div>
-</template>
+  <template>
+    <basic-children-content id="stackContainer">
+      <content id="content"></content>
+    </basic-children-content>
+  </template>
+</dom-module>
+
 <script>
-Polymer(Platform.mixin({
+Polymer({
 
-  attached: function() {
-    this.super();
-    this.listenForResize();
+  behaviors: [
+    Basic.Aspect,
+    Basic.Resized
+  ],
+
+  contribute: {
+
+    contentChanged: function() {
+      setTimeout(function() {
+        this.recalc();
+      }.bind(this));
+    }
+
   },
 
-  contentChanged: function() {
-    setTimeout(function() {
-      this.recalc();
-    }.bind(this));
+  hostAttributes: {
+    target: 'shadow'
   },
 
-  detached: function() {
-    this.super();
-    this.listenForResize(false);
-  },
+  is: 'basic-stack',
 
+  /**
+   * Force the component to recalculate its size.
+   *
+   * @method recalc
+   */
   recalc: function() {
-    var contentNodes = this.flattenChildren;
+    var contentNodes = this.content;
+    if (!contentNodes) {
+      return;
+    }
     var maxWidth = 0;
     var maxHeight = 0;
     Array.prototype.forEach.call(contentNodes, function(node) {
@@ -73,6 +89,7 @@ Polymer(Platform.mixin({
     this.$.stackContainer.style.height = height;
 
     var event = new CustomEvent('basic-layout', {
+      bubbles: true,
       detail: {
         count: contentNodes.length,
         height: parseInt(height),
@@ -83,11 +100,12 @@ Polymer(Platform.mixin({
   },
 
   resized: function(event) {
-    var foo = this.$.stackContainer.style;
-    this.$.stackContainer.style.width = '100%';
-    this.recalc();
+    if (this.$ && this.$.stackContainer) {
+      var foo = this.$.stackContainer.style;
+      this.$.stackContainer.style.width = '100%';
+      this.recalc();
+    }
   }
 
-}, BasicResizeHelpers));
+});
 </script>
-</polymer-element>
